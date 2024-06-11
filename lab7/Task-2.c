@@ -31,23 +31,25 @@ int findMinAbsIndex(int array[], int size) {
     return minIndex;
 }
 
-int productBetweenZeros(int array[], int size) {
+int productBetweenZeros(int array[], int size, bool *foundZeros) {
     int firstZeroIndex = -1;
     int secondZeroIndex = -1;
     int product = 1;
+    *foundZeros = false;
 
     for (int i = 0; i < size; i++) {
         if (array[i] == 0) {
-            if (firstZeroIndex == -1)
+            if (firstZeroIndex == -1) {
                 firstZeroIndex = i;
-            else {
+            } else {
                 secondZeroIndex = i;
+                *foundZeros = true;
                 break;
             }
         }
     }
 
-    if (firstZeroIndex != -1 && secondZeroIndex != -1) {
+    if (*foundZeros) {
         for (int i = firstZeroIndex + 1; i < secondZeroIndex; i++) {
             product *= array[i];
         }
@@ -77,8 +79,13 @@ int main() {
         int minAbsIndex = findMinAbsIndex(array, size);
         printf("Номер мінімального за модулем елемента масиву: %d\n", minAbsIndex);
 
-        int product = productBetweenZeros(array, size);
-        printf("Добуток елементів масиву, розташованих між першим й другим нульовими елементами: %d\n", product);
+        bool foundZeros;
+        int product = productBetweenZeros(array, size, &foundZeros);
+        if (foundZeros) {
+            printf("Добуток елементів масиву, розташованих між першим й другим нульовими елементами: %d\n", product);
+        } else {
+            printf("В масиві недостатньо нульових елементів для обчислення добутку.\n");
+        }
 
         printf("Натисніть 1, щоб повторити програму або 0, щоб вийти: ");
         if (scanf("%d", &repeat) != 1 || (repeat != 0 && repeat != 1)) {
